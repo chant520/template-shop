@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仿腾讯云登录页面</title>
+    <style>
+        :root {
+            --select-border: #666;
+            --select-focus: blue;
+            --select-arrow: var(--select-border);
+        }
+        *,*::before,*::after{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        a{
+            cursor: pointer;
+            color: #00a4ff;
+        }
+        body{
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .footer{
+            color: #ccc;
+            font-size: 15px;
+            text-align: center;
+            line-height: 70px;
+            border-top: 1px solid #d6d6d6;
+        }
+        .header{
+            height: 70px;
+            background-color: #2b303b;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo{
+            height: 30px;
+            font-size: 30px;
+            color: #fff;
+            font-weight: 600;
+            line-height: 1;
+        }
+        .main{
+            flex: 1;
+            padding-top: 130px;
+        }
+
+        .select{
+            width: 200px;
+            height: 36px;
+            cursor: pointer;
+            display: grid;
+            align-content: center;
+            grid-template-areas: "select";
+            align-items: center;
+            border: 1px solid var(--select-border);
+            padding: 0 10px;
+            position: relative;
+        }
+        .select::after {
+            content: "";
+            width: 10px;
+            height: 6px;
+            background-color: var(--select-arrow);
+            clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+            justify-self: end;
+        }
+        .select .selected{
+            color: #ffc0c0;
+            font-size: 14px;
+        }   
+
+        .select .select-list{
+            cursor: pointer;
+            position: absolute;
+            top: 36px;
+            left: -1px;
+            width: 200px;
+            background-color: #2b303b;
+            color: antiquewhite;
+            display: none;
+            list-style: none;
+            padding: 0 10px;
+        }
+        .select .select-list li{
+            height: 36px;
+            font-size: 14px;
+            line-height: 36px;
+        }
+        .select .select-list li:hover{
+            color: blue;
+        }
+        .select:hover .select-list,
+        .select-list:hover {
+            display: block;
+        }   
+        .select>span,
+        .select::after {
+            grid-area: select;
+        }
+        .main{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .main .content{
+            width: 980px;
+            height: 720px;
+            display: flex;
+        }
+
+        .login-advance{
+            width: 490px;
+            height: 570px;
+            padding-top: 70px;
+            padding-left: 40px;
+            background-image: linear-gradient(25deg, #186079, #1e8896, #20b1b3, #1bddd1)
+        }
+        .login-advance h3{
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .login-advance--content{
+            color: #fff;
+            line-height: 2;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+        .login-advance--content ul{
+            list-style-position: inside;
+        }
+
+        .login-advance--button a{
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid #fff;
+            padding: 10px 50px;
+        }
+
+        .login-form{
+            width: 490px;
+            padding-right: 90px;
+        }
+        .login-tab{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            cursor: pointer;
+        }
+        .login-tab--item{
+            padding-bottom: 12px;
+            font-size: 18px;
+            flex: 1;
+            text-align: center;
+            border-bottom: 2px solid #e6e6e6;
+        }
+        .login-tab--item.active{
+            border-bottom: 2px solid #00a4ff;
+        }
+        
+
+        .login-type--1{
+            display: none;
+
+        }
+        .login-tips{
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 40px 0;
+        }
+        .login-tips-2{
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .login-qrcode{
+            width: 180px;
+            height: 180px;
+            border: 1px solid #ebe9e9;
+            padding: 10px;
+            margin: 0 auto;
+        }
+        .login-other--title{
+            font-size: 14px;
+            position: relative;
+            text-align: center;
+            color: #666;
+        }
+        .login-other--title::after{
+            content: '';
+            width: 100%;
+            border-bottom: 1px dashed #c5c5c5;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            z-index: -1;
+        }
+        .login-other--title>span{
+            background: #fff;
+        }
+        .login-other--list{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+            justify-content: center;
+            padding:  20px 0;
+            border-bottom: 1px dashed #c5c5c5;
+        }
+
+        .login-question{
+            font-size: 14px;
+            text-align: center;
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px dashed #c5c5c5;
+        }
+        .login-question a{
+            flex: 1;
+            color: #000;
+        }
+        .login-question a:not(:last-child){
+            border-right: 1px solid #c5c5c5;
+        }
+        .login-question a:hover{
+            /* text-decoration: underline; */
+            color: #00a4ff;
+        }
+        .login-foot{
+            padding-top: 30px;
+        }
+
+        .login-foot>div:first-child{
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .login-foot>div:nth-child(2){
+            font-size: 12px;
+            color: #afaeae;
+            line-height: 2;
+        }
+
+        .login-type--2{
+            /* display: none; */
+        }
+        .login-post{
+            display: flex;
+            flex-direction: column;
+            padding-top: 40px;
+        }
+        .login-post input{
+            height: 45px;
+            margin: 10px 0;
+            border: 1px solid #c5c5c5;
+            padding: 0 10px;
+            outline: none;
+        }
+        .login-post input:hover{
+            border: 1px solid #0193e2;
+        }
+        .login-post button{
+            height: 45px;
+            background-color: #00a4ff;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .login-post button:hover{
+            background-color: #0193e2;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <span>71ANG</span>
+            <!-- 这里是logo 何以替换成图片 -->
+            <!-- <img src="" alt=""> -->
+        </div>
+        <div class="select">
+            <span class="selected">中国站</span>
+            <ul class="select-list">
+                <li>中国站</li>
+                <li>International</li>
+            </ul>
+        </div>
+    </header>
+    <main class="main">
+        <div class="content">
+            <div class="login-form">
+                <div class="login-tab">
+                    <div class="login-tab--item active">微信扫码登录</div>
+                    <div class="login-tab--item">邮箱账号登录</div>
+                </div>
+                <div class="login-tab--content">
+                    <div class="login-type--1">
+                        <div class="login-tips">请使用微信扫一扫登录 <a>刷新</a></div>
+                        <div class="login-qrcode"></div>
+                        <div class="login-tips-2">微信扫码登录失败？前往 <a>微信授权页</a></div>
+                        <div class="login-other">
+                            <div class="login-other--title"><span>其他登录方式</span></div>
+                            <div class="login-other--list">
+                                <span>QQ</span>
+                                <span>小程序</span>
+                                <span>子用户</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login-type--2">
+                        <form class="login-post" action="/" method="post">
+                            <input type="email" name="username" id="" placeholder="请输入邮箱地址/DNSPod账号">
+                            <input type="password" name="password" id="" placeholder="请输入腾讯云账号密码">
+                            <button>登录</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="login-question">
+                    <a>立即注册</a>
+                    <a>忘记密码</a>
+                    <a>忘记账号</a>
+                </div>
+                <div class="login-foot">
+                    <div>登录遇到问题？</div>
+                    <div>原登录方式不可用、密码无法找回、账号管理员变动，前往进行 <a href="">自助申诉</a>其他登录异常，请参考 <a href="">登录异常帮助文档</a></div>
+                </div>
+            </div>
+            <div class="login-advance">
+                <h3>金秋上云</h3>
+                <div class="login-advance--content">
+                    <ul>
+                        <li>2核2G3M云服务器 7.92元/月起</li>
+                        <li>开发者专属3年机 低至3折</li>
+                        <li>还有2000元代金券免费领取</li>
+                    </ul>
+                </div>
+                <div class="login-advance--button">
+                    <a href="">立即抢购</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        Copyright © 2023-2023 Tencent Cloud. All Rights Reserved. 71ANG 版权所有
+    </footer>
+</body>
+</html>
